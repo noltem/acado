@@ -258,6 +258,7 @@ classdef Expression < handle
             elseif isnumeric(obj2) && length(obj2) == 1
                 obj2 = obj2*ones(size(obj1));
             end
+
             if size(obj1,1) ~= size(obj2,1) || size(obj1,2) ~= size(obj2,2)
                 error('ERROR: Invalid acado.LessThan. Check your dimensions..');
             end
@@ -274,12 +275,19 @@ classdef Expression < handle
             elseif isnumeric(obj2) && length(obj2) == 1
                 obj2 = obj2*ones(size(obj1));
             end
-            if size(obj1,1) ~= size(obj2,1) || size(obj1,2) ~= size(obj2,2)
-                error('ERROR: Invalid acado.LessThanEqual. Check your dimensions..');
-            end
-            for i = 1:size(obj1,1)
-                for j = 1:size(obj1,2)
-                    r(i,j) = acado.LessThanEqual(obj1(i,j),obj2(i,j));
+            if ( isa(obj1, 'acado.Variable') && length(obj1) == 1 && size(obj2,2) == 2 ) || ...
+               ( isa(obj2, 'acado.Variable') && length(obj2) == 1 && size(obj1,2) == 2 ) || ...
+               ( isa(obj1, 'acado.Expression') && length(obj1) == 1 && size(obj2,2) == 2 )
+                % special case of a VariablesGrid
+                r = acado.LessThanEqual(obj1,obj2);
+            else
+                if size(obj1,1) ~= size(obj2,1) || size(obj1,2) ~= size(obj2,2)
+                    error('ERROR: Invalid acado.LessThanEqual. Check your dimensions..');
+                end
+                for i = 1:size(obj1,1)
+                    for j = 1:size(obj1,2)
+                        r(i,j) = acado.LessThanEqual(obj1(i,j),obj2(i,j));
+                    end
                 end
             end
         end
@@ -289,7 +297,7 @@ classdef Expression < handle
                 obj1 = obj1*ones(size(obj2));
             elseif isnumeric(obj2) && length(obj2) == 1
                 obj2 = obj2*ones(size(obj1));
-            end
+            end          
             if size(obj1,1) ~= size(obj2,1) || size(obj1,2) ~= size(obj2,2)
                 error('ERROR: Invalid acado.GreaterThan. Check your dimensions..');
             end
@@ -306,12 +314,19 @@ classdef Expression < handle
             elseif isnumeric(obj2) && length(obj2) == 1
                 obj2 = obj2*ones(size(obj1));
             end
-            if size(obj1,1) ~= size(obj2,1) || size(obj1,2) ~= size(obj2,2)
-                error('ERROR: Invalid acado.GreaterThanEqual. Check your dimensions..');
-            end
-            for i = 1:size(obj1,1)
-                for j = 1:size(obj1,2)
-                    r(i,j) = acado.GreaterThanEqual(obj1(i,j),obj2(i,j));
+            if ( isa(obj1, 'acado.Variable') && length(obj1) == 1 && size(obj2,2) == 2 ) || ...
+               ( isa(obj2, 'acado.Variable') && length(obj2) == 1 && size(obj1,2) == 2 ) || ...
+               ( isa(obj1, 'acado.Expression') && length(obj1) == 1 && size(obj2,2) == 2 )
+                % special case of a VariablesGrid
+                r = acado.GreaterThanEqual(obj1,obj2);
+            else            
+                if size(obj1,1) ~= size(obj2,1) || size(obj1,2) ~= size(obj2,2)
+                    error('ERROR: Invalid acado.GreaterThanEqual. Check your dimensions..');
+                end
+                for i = 1:size(obj1,1)
+                    for j = 1:size(obj1,2)
+                        r(i,j) = acado.GreaterThanEqual(obj1(i,j),obj2(i,j));
+                    end
                 end
             end
         end

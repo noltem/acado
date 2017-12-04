@@ -43,7 +43,14 @@ classdef LessThanEqual < acado.BooleanVariable
             if nargin > 0
                 obj.obj1 = obj.checkDoubleVectorMatrix(obj1);
                 obj.obj2 = obj.checkDoubleVectorMatrix(obj2);
-            end
+                
+                if( (isa(obj1, 'acado.Expression') || isa(obj1, 'acado.Variable')) && length(obj1) == 1 && size(obj2,2) == 2 && isa(obj.obj2, 'acado.Matrix') )   % special case of a VariablesGrid
+                    obj.obj2 = acado.VariablesGrid(obj.obj2); 
+                end 
+                if( (isa(obj2, 'acado.Expression') || isa(obj2, 'acado.Variable')) && length(obj2) == 1 && size(obj1,2) == 2 && isa(obj.obj1, 'acado.Matrix') )   % special case of a VariablesGrid
+                    obj.obj1 = acado.VariablesGrid(obj.obj1); 
+                end              
+            end         
         end
         
         function s = toString(obj)
